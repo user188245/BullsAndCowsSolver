@@ -2,19 +2,23 @@ package com.user188245.bullsandcowssolver;
 
 import java.util.*;
 
+/**
+ * Greedy-Searching Algorithm
+ */
+
 public class BCSolverV3 implements BullsAndCowsSolver {
 
-    private int unitSize;
+    protected int unitSize;
 
-    private int boxSize;
+    protected int boxSize;
 
-    private final static Integer WILDCARD = -1;
+    protected final static Integer WILDCARD = -1;
 
-    private List<Guess> answerableSet;
+    protected List<Guess> answerableSet;
 
-    private List<Integer> wildCardList;
+    protected List<Integer> wildCardList;
 
-    private List<Trial> history;
+    protected List<Trial> history;
 
     public class WCAnswerProcessUnit extends AnswerProcessUnit {
 
@@ -22,7 +26,7 @@ public class BCSolverV3 implements BullsAndCowsSolver {
             super(guess, bullsCount, cowsCount);
         }
 
-        public void fillWildCard(){
+        void fillWildCard(){
             super.fillWildCard(WCAnswerProcessUnit.CONVERTOR.get(WILDCARD));
             this.bullsCount =0;
         }
@@ -51,17 +55,23 @@ public class BCSolverV3 implements BullsAndCowsSolver {
 
     @Override
     public Guess getSolution() {
-        Guess solution = null;
-        if(!answerableSet.isEmpty()){
-            Collections.shuffle(wildCardList);
+        Guess solution;
+        Collections.shuffle(wildCardList);
+        if(answerableSet.isEmpty()){
+            Integer[] integers = new Integer[boxSize];
+            Arrays.fill(integers,WILDCARD);
+            solution = GuessImpl.generate(integers);
+        }else{
             solution = answerableSet.get(new Random().nextInt(answerableSet.size()));
-            for(int i=0,j=0; i<solution.size(); i++){
-                if(solution.get(i).equals(WILDCARD)){
-                    solution.set(i,wildCardList.get(j++));
-                }
+        }
+        Guess newSolution;
+        newSolution = (Guess)solution.clone();
+        for(int i=0,j=0; i<solution.size(); i++){
+            if(newSolution.get(i).equals(WILDCARD)){
+                newSolution.set(i,wildCardList.get(j++));
             }
         }
-        return solution;
+        return newSolution;
     }
 
     @Override
@@ -100,6 +110,21 @@ public class BCSolverV3 implements BullsAndCowsSolver {
             }
         }
         this.wildCardList.removeIf(answer2::contains);
+        int wcSize = this.wildCardList.size();
+        if(wcSize < boxSize){
+            for(int i=0; i<answerableSet.size(); i++){
+                int count = 0;
+                Integer[] answer = answerableSet.get(i).toArray();
+                for(Integer integer : answer){
+                    if(integer.equals(WILDCARD)){
+                        count++;
+                    }
+                }
+                if(count > wcSize){
+                    answerableSet.remove(i--);
+                }
+            }
+        }
         history.add(trial);
     }
 

@@ -2,20 +2,24 @@ package com.user188245.bullsandcowssolver;
 
 import java.util.*;
 
+
+/**
+ * Incomplete Greedy-Searching Algorithm
+ */
 @Deprecated
 public class BCSolverV2 implements BullsAndCowsSolver {
 
-    private int unitSize;
+    protected int unitSize;
 
-    private int boxSize;
+    protected int boxSize;
 
-    private final static Integer WILDCARD = -1;
+    protected final static Integer WILDCARD = -1;
 
-    private List<Guess> answerableSet;
+    protected List<Guess> answerableSet;
 
-    private List<Integer> wildCardList;
+    protected List<Integer> wildCardList;
 
-    private List<Trial> history;
+    protected List<Trial> history;
 
     public BCSolverV2(int unitSize, int boxSize) {
         this.unitSize = unitSize;
@@ -111,10 +115,10 @@ public class BCSolverV2 implements BullsAndCowsSolver {
         if (bulls > 0) {
             for (int i = 0; i < guess.size(); i++) {
                 int item = guess.get(i);
-                Guess guessS = guess.removeItem(i);
+                Guess guessS = removeItem(guess,i);
                 Set<Guess> resultS = getSeriesClue(guessS, bulls - 1, cows);
                 for (Guess resItem : resultS) {
-                    result.add(resItem.insertItem(i,item));
+                    result.add(insertItem(resItem,i,item));
                 }
             }
         }else if(cows > 0) {
@@ -122,26 +126,26 @@ public class BCSolverV2 implements BullsAndCowsSolver {
                 for(int j = 0; j< guess.size(); j++){
                     if(i==j)continue;
                     int item = guess.get(j);
-                    Guess guessS = guess.removeItem(j);
+                    Guess guessS = removeItem(guess,j);
                     Set<Guess> resultS = getSeriesClue(guessS, 0, cows-1);
                     for (Guess resItem : resultS) {
-                        result.add(resItem.insertItem(i,item));
+                        result.add(insertItem(resItem,i,item));
                     }
                     if(j>i && cows>=2 && guess.size()>=2){
                         int item2 = guess.get(i);
-                        Guess guessS2 = guessS.removeItem(i);
+                        Guess guessS2 = removeItem(guessS,i);
                         Set<Guess> resultS2 = getSeriesClue(guessS2, 0, cows-2);
                         for (Guess resItem : resultS2) {
-                            result.add(resItem.insertItem(i,item).insertItem(j,item2));
+                            result.add(insertItem(insertItem(resItem,i,item),j,item2));
                         }
                     }
                 }
             }
             for (int i = 0; i< guess.size(); i++){
-                Guess guessS = guess.removeItem(i);
+                Guess guessS = removeItem(guess,i);
                 Set<Guess> resultS = getSeriesClue(guessS, 0, cows);
                 for (Guess resItem : resultS) {
-                    result.add(resItem.insertItem(i,WILDCARD));
+                    result.add(insertItem(resItem,i,WILDCARD));
                 }
             }
         } else {
@@ -188,5 +192,17 @@ public class BCSolverV2 implements BullsAndCowsSolver {
             return false;
         });
         return result2;
+    }
+
+    Guess insertItem(Guess guess, int index, Integer item){
+        GuessImpl out = (GuessImpl)guess.clone();
+        out.add(index,item);
+        return out;
+    }
+
+    Guess removeItem(Guess guess, int index){
+        GuessImpl out = (GuessImpl)guess.clone();
+        out.remove(index);
+        return out;
     }
 }

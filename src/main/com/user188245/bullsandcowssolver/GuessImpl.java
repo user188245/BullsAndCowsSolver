@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GuessImpl extends ArrayList<Integer> implements Guess {
+public class GuessImpl extends ArrayList<Integer> implements Guess{
 
     GuessImpl(){
         super();
@@ -18,7 +18,7 @@ public class GuessImpl extends ArrayList<Integer> implements Guess {
         super(list);
     }
 
-    public static GuessImpl generate(Integer... input){
+    public static GuessImpl generate(Integer... input) {
         return new GuessImpl(Arrays.asList(input));
     }
 
@@ -43,23 +43,10 @@ public class GuessImpl extends ArrayList<Integer> implements Guess {
     }
 
     @Override
-    public Guess removeItem(int index) {
-        GuessImpl out = (GuessImpl)clone();
-        out.remove(index);
-        return out;
-    }
-
-    @Override
-    public Guess insertItem(int index, Integer item) {
-        GuessImpl out = (GuessImpl)clone();
-        out.add(index,item);
-        return out;
-    }
-
-    @Override
     public Integer[] toArray(){
         return super.toArray(new Integer[0]);
     }
+
 
     @Override
     public int[] computeResult(Guess realGuess) throws IndexOutOfBoundsException{
@@ -95,5 +82,4 @@ public class GuessImpl extends ArrayList<Integer> implements Guess {
             return result;
         }
     }
-
 }

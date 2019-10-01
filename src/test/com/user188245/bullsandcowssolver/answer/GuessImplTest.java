@@ -13,7 +13,7 @@ class GuessImplTest {
     void equal() {
         Guess guess = GuessImpl.generate(1,2,3);
         Guess guess2 = GuessImpl.generate(1,2,3);
-        assertTrue(guess.equals(guess2));
+        assertEquals(guess,guess2);
     }
 
     @Test
@@ -40,24 +40,6 @@ class GuessImplTest {
         Guess guess = GuessImpl.generate(1,3,5,7,8,9);
         assertTrue(guess.contains(3));
         assertFalse(guess.contains(11));
-    }
-
-    @Test
-    void removeItem() {
-        Guess guess = GuessImpl.generate(1,3,5,7,8,9);
-        Guess guess2 = guess.removeItem(4);
-        assertFalse(guess.equals(guess2));
-        assertNotEquals(9, guess.get(4));
-        assertEquals(9, guess2.get(4));
-    }
-
-    @Test
-    void insertItem() {
-        Guess guess = GuessImpl.generate(1,3,5,7,8,9);
-        Guess guess2 = guess.insertItem(3, 500);
-        assertFalse(guess.equals(guess2));
-        assertNotEquals(500, guess.get(3));
-        assertEquals(500, guess2.get(3));
     }
 
     @Test

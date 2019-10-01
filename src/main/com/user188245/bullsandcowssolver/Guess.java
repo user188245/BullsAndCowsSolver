@@ -1,6 +1,6 @@
 package com.user188245.bullsandcowssolver;
 
-public interface Guess {
+public interface Guess extends Cloneable{
 
     /**
      * @purity : pure
@@ -29,20 +29,6 @@ public interface Guess {
      */
     public boolean contains(Integer item);
 
-    /**
-     * @purity : pure
-     * @param index
-     * @return (Pure)returns New Instance of The Guess which not contains the item, not "this" Guess
-     */
-    public Guess removeItem(int index);
-
-    /**
-     * @purity : pure
-     * @param index
-     * @param item
-     * @return returns New Instance of The Guess which contains new item, not "this" Guess
-     */
-    public Guess insertItem(int index, Integer item);
 
     /**
      * @purity : pure
@@ -52,11 +38,12 @@ public interface Guess {
 
     /**
      * @purity : pure
-     * @return new Integer[2], result[0] = number of strike, reuslt[1] = number of ball
+     * @return new Integer[2], result[0] = number of bulls, reuslt[1] = number of cows
      */
     public int[] computeResult(Guess realGuess) throws IndexOutOfBoundsException;
 
 
+    public Object clone();
 
 
 

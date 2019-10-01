@@ -9,7 +9,7 @@ public class AnswerProcessUnit implements Cloneable{
     protected List<ArrayList<Integer>> caa;
     protected int bullsCount;
     protected int cowsCount;
-    protected ArrayList<Integer> unaccessedIndexes;
+    protected ArrayList<Integer> unusedIndexes;
     protected final static NumberToListConvertor CONVERTOR = new NumberToListConvertor();
 
     AnswerProcessUnit(Guess guess, int bullsCount, int cowsCount) {
@@ -26,16 +26,16 @@ public class AnswerProcessUnit implements Cloneable{
         }
         this.bullsCount = bullsCount;
         this.cowsCount = cowsCount;
-        unaccessedIndexes = new ArrayList<>();
+        unusedIndexes = new ArrayList<>();
         for(int i=0; i<caa.size(); i++){
-            unaccessedIndexes.add(i);
+            unusedIndexes.add(i);
         }
     }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
         AnswerProcessUnit out = (AnswerProcessUnit)super.clone();
-        out.unaccessedIndexes = (ArrayList<Integer>) this.unaccessedIndexes.clone();
+        out.unusedIndexes = (ArrayList<Integer>) this.unusedIndexes.clone();
         out.caa = new ArrayList<>();
         for(ArrayList<Integer> ca : this.caa){
             out.caa.add((ArrayList<Integer>) ca.clone());
@@ -45,12 +45,12 @@ public class AnswerProcessUnit implements Cloneable{
 
     public List<AnswerProcessUnit> reduceBulls(Guess guess) throws CloneNotSupportedException {
         List<AnswerProcessUnit> apuList = new LinkedList<>();
-        for(int i=0; i<unaccessedIndexes.size(); i++) {
+        for(int i = 0; i< unusedIndexes.size(); i++) {
             AnswerProcessUnit apu2 = (AnswerProcessUnit) this.clone();
-            int index = apu2.unaccessedIndexes.remove(i);
+            int index = apu2.unusedIndexes.remove(i);
             apu2.caa.set(index,CONVERTOR.get(guess.get(index)));
             apu2.bullsCount--;
-            for(int j: apu2.unaccessedIndexes){
+            for(int j: apu2.unusedIndexes){
                 apu2.caa.get(j).removeIf(x->x.equals(guess.get(index)));
             }
             apuList.add(apu2);
@@ -60,15 +60,15 @@ public class AnswerProcessUnit implements Cloneable{
 
     public List<AnswerProcessUnit> reduceCows() throws CloneNotSupportedException {
         List<AnswerProcessUnit> apuList = new LinkedList<>();
-        for(int i=0; i<unaccessedIndexes.size(); i++) {
-            int index = unaccessedIndexes.get(i);
+        for(int i = 0; i< unusedIndexes.size(); i++) {
+            int index = unusedIndexes.get(i);
             ArrayList<Integer> ca = caa.get(index);
             for(int j=0; j<ca.size(); j++){
                 AnswerProcessUnit apu2 = (AnswerProcessUnit) this.clone();
-                apu2.unaccessedIndexes.remove(i);
+                apu2.unusedIndexes.remove(i);
                 Integer number = ca.get(j);
                 apu2.caa.set(index, CONVERTOR.get(number));
-                for(int k : apu2.unaccessedIndexes){
+                for(int k : apu2.unusedIndexes){
                     apu2.caa.get(k).removeIf(x->x.equals(number));
                 }
                 apu2.cowsCount--;
@@ -86,9 +86,8 @@ public class AnswerProcessUnit implements Cloneable{
             }else{
                 wc = new ArrayList<>(wildCardList);
             }
-            bullsCount = unaccessedIndexes.size();
-            cowsCount = 0;
-            for(int i : unaccessedIndexes){
+            bullsCount = unusedIndexes.size();
+            for(int i : unusedIndexes){
                 caa.set(i, (ArrayList<Integer>)wc.clone());
             }
         }else{

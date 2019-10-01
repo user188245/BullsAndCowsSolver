@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BCSolverV3Test {
 
-    BullsAndCowsSolver solver;
+    private BullsAndCowsSolver solver;
 
     @BeforeEach
     void before() {
-        solver = new BCSolverV3(10,4);
+        solver = new WEF_BCSolver(10,4);
     }
 
     @Test
@@ -54,6 +54,35 @@ class BCSolverV3Test {
         assertEquals(new Trial(GuessImpl.generate(1,2,3,4),0,1), history.get(0));
         assertEquals(new Trial(GuessImpl.generate(5,6,7,8),0,1), history.get(1));
         assertEquals(new Trial(GuessImpl.generate(2,1,7,4),0,2), history.get(2));
+        history.forEach(x->
+                assertTrue(checkTrialFine(x, guess1))
+        );
+    }
+
+    @Test
+    void thirdGame(){
+        /* Guess : 1492 */
+        solver.putClue(new Trial(GuessImpl.generate(0,5,1,4),0,2));
+        solver.putClue(new Trial(GuessImpl.generate(3,1,0,8),0,1));
+        solver.putClue(new Trial(GuessImpl.generate(4,7,8,5),0,1));
+        solver.putClue(new Trial(GuessImpl.generate(1,6,5,9),1,1));
+        solver.putClue(new Trial(GuessImpl.generate(1,4,2,6),2,1));
+        Guess guess1 = solver.getSolution();
+        List<Trial> history = solver.getHistory();
+        history.forEach(x->
+                assertTrue(checkTrialFine(x, guess1))
+        );
+    }
+
+    @Test
+    void forthGame(){
+        /* Guess : 2895 */
+        solver.putClue(new Trial(GuessImpl.generate(0,1,2,3),0,1));
+        solver.putClue(new Trial(GuessImpl.generate(2,5,7,9),1,2));
+        solver.putClue(new Trial(GuessImpl.generate(6,2,5,9),0,3));
+        solver.putClue(new Trial(GuessImpl.generate(4,5,9,2),1,2));
+        Guess guess1 = solver.getSolution();
+        List<Trial> history = solver.getHistory();
         history.forEach(x->
                 assertTrue(checkTrialFine(x, guess1))
         );
