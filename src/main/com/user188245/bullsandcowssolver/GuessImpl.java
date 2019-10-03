@@ -22,6 +22,10 @@ public class GuessImpl extends ArrayList<Integer> implements Guess{
         return new GuessImpl(Arrays.asList(input));
     }
 
+    public static GuessImpl generate(List<Integer> input) {
+        return new GuessImpl(input);
+    }
+
     @Override
     public int size() {
         return super.size();

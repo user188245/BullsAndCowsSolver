@@ -141,6 +141,7 @@ public class BCSolverV3 implements BullsAndCowsSolver {
         }
         this.answerableSet.clear();
         this.history.clear();
+        System.gc();
     }
 
     void printAnswerable(){

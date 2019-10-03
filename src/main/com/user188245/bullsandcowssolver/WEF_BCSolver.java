@@ -20,7 +20,7 @@ public class WEF_BCSolver extends BCSolverV3{
     @Override
     public Guess getSolution() {
         Guess solution;
-        //Collections.shuffle(wildCardList);
+        Collections.shuffle(wildCardList);
         if(answerableSet.isEmpty()){
             if(wildCardList.size()<boxSize){
                 return null;
