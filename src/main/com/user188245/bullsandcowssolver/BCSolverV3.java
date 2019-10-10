@@ -3,7 +3,7 @@ package com.user188245.bullsandcowssolver;
 import java.util.*;
 
 /**
- * Greedy-Searching Algorithm
+ * Greedy-Searching Algorithm, using wildcard character.
  */
 
 public class BCSolverV3 implements BullsAndCowsSolver {

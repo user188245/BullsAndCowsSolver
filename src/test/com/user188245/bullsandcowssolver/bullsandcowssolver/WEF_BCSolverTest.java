@@ -6,15 +6,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BCSolverV3Test {
+class WEF_BCSolverTest {
 
     private BullsAndCowsSolver solver;
 
     @BeforeEach
     void before() {
-        solver = new BCSolverV3(10,4);
+        solver = new WEF_BCSolver(10,4);
     }
 
     @Test
