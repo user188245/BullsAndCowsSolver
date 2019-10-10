@@ -1,1 +1,1 @@
-# bulls-and-cows-solver
+# BullsAndCowsSolver
