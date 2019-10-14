@@ -1,22 +1,22 @@
-package com.user188245.bullsandcowssolver.bullsandcowssolver;
+package com.user188245.bullsandcowssolver;
 
-import com.user188245.bullsandcowssolver.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-class WEF_BCSolverTest {
+abstract class BullsAndCowsSolverTest {
 
-    private BullsAndCowsSolver solver;
+    BullsAndCowsSolver solver;
+
+    abstract BullsAndCowsSolver build(int unitSize, int boxSize);
 
     @BeforeEach
-    void before() {
-        solver = new WEF_BCSolver(10,4);
-    }
+    void before(){
+        solver = build(10,4);
+    };
 
     @Test
     void getUnitSize() {

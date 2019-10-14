@@ -1,4 +1,4 @@
-package com.user188245.bullsandcowssolver.answer;
+package com.user188245.bullsandcowssolver;
 
 import com.user188245.bullsandcowssolver.Guess;
 import com.user188245.bullsandcowssolver.GuessImpl;

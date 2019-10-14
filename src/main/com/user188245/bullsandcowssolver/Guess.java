@@ -1,6 +1,8 @@
 package com.user188245.bullsandcowssolver;
 
-public interface Guess extends Cloneable{
+import java.io.Serializable;
+
+public interface Guess extends Cloneable, Serializable{
 
     /**
      * @purity : pure

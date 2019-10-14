@@ -1,6 +1,8 @@
 package com.user188245.bullsandcowssolver;
 
-public class Trial {
+import java.io.Serializable;
+
+public class Trial implements Serializable {
 
     private Guess guess;
     private int bulls;

@@ -21,6 +21,7 @@ public class WEF_BCSolver extends BCSolverV3{
     public Guess getSolution() {
         Guess solution;
         Collections.shuffle(wildCardList);
+        int highestWcCount = 0;
         if(answerableSet.isEmpty()){
             if(wildCardList.size()<boxSize){
                 return null;
@@ -29,7 +30,6 @@ public class WEF_BCSolver extends BCSolverV3{
             Arrays.fill(integers,WILDCARD);
             solution = GuessImpl.generate(integers);
         }else{
-            int highestWcCount = 0;
             if(wildCardList.size() > 1){
                 solution = answerableSet.get(0);
                 for(Guess guess : answerableSet){
@@ -50,6 +50,19 @@ public class WEF_BCSolver extends BCSolverV3{
         }
         Guess newSolution;
         newSolution = (Guess)solution.clone();
+//        if(highestWcCount>0 && wildCardList.size()>highestWcCount){
+//            int limit = (wildCardList.size()>=boxSize)?boxSize:wildCardList.size();
+//            for(int i=0; i<newSolution.size(); i++){
+//                if(limit <= highestWcCount){
+//                    break;
+//                }else{
+//                    if(!newSolution.get(i).equals(WILDCARD)){
+//                        newSolution.set(i, WILDCARD);
+//                        highestWcCount++;
+//                    }
+//                }
+//            }
+//        }
         for(int i=0,j=0; i<solution.size(); i++){
             if(newSolution.get(i).equals(WILDCARD)){
                 newSolution.set(i,wildCardList.get(j++));

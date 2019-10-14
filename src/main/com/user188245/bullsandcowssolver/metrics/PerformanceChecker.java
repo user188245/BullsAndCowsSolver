@@ -19,6 +19,8 @@ public class PerformanceChecker {
 
     private int maximumTrial;
 
+    private List<Trial> maximumTrialExample;
+
     private long elapsedTime;
 
     List<Integer> unitList;
@@ -29,6 +31,7 @@ public class PerformanceChecker {
             unitList.add(i);
         }
         this.bcSolver = bcSolver;
+        this.maximumTrialExample = new ArrayList<>(10);
         count = 0;
         averageTrial = 0.0f;
         maximumTrial = 0;
@@ -38,7 +41,6 @@ public class PerformanceChecker {
     void test(int count){
         long time = System.currentTimeMillis();
         int box = bcSolver.getBoxSize();
-        int unit = bcSolver.getUnitSize();
         Guess answer;
         Guess guess;
         int[] guessResult;
@@ -55,9 +57,14 @@ public class PerformanceChecker {
                 bcSolver.putClue(new Trial(guess,guessResult[0],guessResult[1]));
                 guess = bcSolver.getSolution();
             }
+            bcSolver.putClue(new Trial(guess,guessResult[0],guessResult[1]));
             int trialSize = bcSolver.getHistory().size();
             if(trialSize > this.maximumTrial){
                 this.maximumTrial = trialSize;
+                this.maximumTrialExample.clear();
+                for(Trial trial : bcSolver.getHistory()){
+                    this.maximumTrialExample.add(trial);
+                }
             }
             totalTrial += trialSize;
             totalCount++;
@@ -74,6 +81,7 @@ public class PerformanceChecker {
         System.out.println("test count : " + count);
         System.out.println("averageTrial per Game: " + averageTrial);
         System.out.println("maximumTrial on game: " + maximumTrial);
+        System.out.println("maximumTrial example: " + maximumTrialExample);
         System.out.println("total elapsed time: " + elapsedTime + "ms");
 
     }
