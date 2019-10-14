@@ -5,7 +5,6 @@ import java.util.List;
 
 class TreeBCSCacheTest extends ByteSerializableBCSCacheTest{
 
-
     @Override
     ByteSerializableBCSCache build() {
         Guess rootGuess = GuessImpl.generate(1,2,3,4);
@@ -23,4 +22,5 @@ class TreeBCSCacheTest extends ByteSerializableBCSCacheTest{
     BCSCache build(Guess rootGuess, int unitSize) {
         return new TreeBCSCache(rootGuess,unitSize);
     }
+
 }

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NumberToListConvertor {
+public class NumberToListConverter {
 
-    private Map<Integer, ArrayList<Integer>> convertor;
+    private Map<Integer, ArrayList<Integer>> converter;
 
-    public NumberToListConvertor() {
-        this.convertor = new HashMap<>();
+    public NumberToListConverter() {
+        this.converter = new HashMap<>();
     }
 
     public ArrayList<Integer> get(Integer number){
-        ArrayList<Integer> out = convertor.get(number);
+        ArrayList<Integer> out = converter.get(number);
         if(out == null){
             out = new ArrayList<>();
             out.add(number);
-            convertor.put(number, out);
+            converter.put(number, out);
         }
         return out;
     }

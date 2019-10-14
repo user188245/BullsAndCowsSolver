@@ -10,7 +10,7 @@ public class AnswerProcessUnit implements Cloneable{
     protected int bullsCount;
     protected int cowsCount;
     protected ArrayList<Integer> unusedIndexes;
-    protected final static NumberToListConvertor CONVERTOR = new NumberToListConvertor();
+    protected final static NumberToListConverter CONVERTER = new NumberToListConverter();
 
     AnswerProcessUnit(Guess guess, int bullsCount, int cowsCount) {
         caa = new ArrayList<>();
@@ -48,7 +48,7 @@ public class AnswerProcessUnit implements Cloneable{
         for(int i = 0; i< unusedIndexes.size(); i++) {
             AnswerProcessUnit apu2 = (AnswerProcessUnit) this.clone();
             int index = apu2.unusedIndexes.remove(i);
-            apu2.caa.set(index,CONVERTOR.get(guess.get(index)));
+            apu2.caa.set(index, CONVERTER.get(guess.get(index)));
             apu2.bullsCount--;
             for(int j: apu2.unusedIndexes){
                 apu2.caa.get(j).removeIf(x->x.equals(guess.get(index)));
@@ -67,7 +67,7 @@ public class AnswerProcessUnit implements Cloneable{
                 AnswerProcessUnit apu2 = (AnswerProcessUnit) this.clone();
                 apu2.unusedIndexes.remove(i);
                 Integer number = ca.get(j);
-                apu2.caa.set(index, CONVERTOR.get(number));
+                apu2.caa.set(index, CONVERTER.get(number));
                 for(int k : apu2.unusedIndexes){
                     apu2.caa.get(k).removeIf(x->x.equals(number));
                 }

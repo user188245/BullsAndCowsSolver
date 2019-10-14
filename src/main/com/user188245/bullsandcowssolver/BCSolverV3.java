@@ -27,7 +27,7 @@ public class BCSolverV3 implements BullsAndCowsSolver {
         }
 
         void fillWildCard(){
-            super.fillWildCard(WCAnswerProcessUnit.CONVERTOR.get(WILDCARD));
+            super.fillWildCard(WCAnswerProcessUnit.CONVERTER.get(WILDCARD));
             this.bullsCount =0;
         }
     }

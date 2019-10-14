@@ -47,7 +47,7 @@ public class CountingBCSolver implements BullsAndCowsSolver{
                             AnswerProcessUnit apu = null;
                             try {
                                 apu = (AnswerProcessUnit) this.clone();
-                                apu.caa.set(unusedIndex,AnswerProcessUnit.CONVERTOR.get(integer));
+                                apu.caa.set(unusedIndex,AnswerProcessUnit.CONVERTER.get(integer));
                                 for(int unused2 : apu.unusedIndexes){
                                     apu.caa.get(unused2).removeIf(x->x.equals(integer));
                                 }
