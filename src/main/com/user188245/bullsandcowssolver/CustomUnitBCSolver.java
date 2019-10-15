@@ -5,14 +5,14 @@ import java.util.*;
 /**
  * @param <E> the custom unit digit.
  */
-public class CustomUnitBCSolver<E> extends BCSolverV3 {
+public class CustomUnitBCSolver<E>{
 
+    private BullsAndCowsSolver solver;
     private final Map<Integer, E> itoe;
     private final Map<E, Integer> etoi;
 
-
-    public CustomUnitBCSolver(int boxSize, List<E> unitSet) {
-        super(unitSet.size(), boxSize);
+    public CustomUnitBCSolver(BullsAndCowsSolver solver, List<E> unitSet) {
+        this.solver = solver;
         this.itoe = new HashMap<>();
         this.etoi = new HashMap<>();
         for(int i=0; i<unitSet.size(); i++){
@@ -23,7 +23,7 @@ public class CustomUnitBCSolver<E> extends BCSolverV3 {
 
     public List<E> getCustomUnitSolution() {
         List<E> result = new ArrayList<>();
-        Guess solution = super.getSolution();
+        Guess solution = solver.getSolution();
         for(int i=0; i< solution.size(); i++){
             result.add(itoe.get(solution.get(i)));
         }
@@ -31,10 +31,10 @@ public class CustomUnitBCSolver<E> extends BCSolverV3 {
     }
 
     public void putCustomUnitClue(List<E> trial, int bulls, int cows) {
-        if(trial.size() != this.boxSize){
-            throw new RuntimeException("Trial box size must be " + this.boxSize +".");
+        if(trial.size() != solver.getBoxSize()){
+            throw new RuntimeException("Trial box size must be " + solver.getBoxSize() +".");
         }
-        Integer[] integers = new Integer[unitSize];
+        Integer[] integers = new Integer[solver.getUnitSize()];
         for(int i=0; i< integers.length; i++){
             Integer j = etoi.get(trial.get(i));
             if(j != null){
@@ -43,8 +43,23 @@ public class CustomUnitBCSolver<E> extends BCSolverV3 {
                 throw new RuntimeException("Invalid unit character : " + trial.get(i));
             }
         }
-        super.putClue(new Trial(GuessImpl.generate(integers),bulls,cows));
+        solver.putClue(new Trial(GuessImpl.generate(integers),bulls,cows));
     }
 
+    public void reset(){
+        solver.reset();
+    }
+
+    public int getUnitSize() {
+        return solver.getUnitSize();
+    }
+
+    public int getBoxSize() {
+        return solver.getBoxSize();
+    }
+
+    public List<Trial> getHistory(){
+        return solver.getHistory();
+    }
 
 }
