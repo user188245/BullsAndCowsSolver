@@ -10,7 +10,7 @@ interface BCSCache{
     /**
      * get guess using the key
      * @param history as key
-     * @return Guess as Value
+     * @return Guess as Value or Null if not exist in cache.
      */
     public Guess get(List<Trial> history);
 

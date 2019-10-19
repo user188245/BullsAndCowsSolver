@@ -28,6 +28,27 @@ interface ByteSerializableBCSCache extends BCSCache{
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("Failed to deserialize.\nCause : " + e.getMessage());
         }
-    };
+    }
+
+    public static ByteSerializableBCSCache deserialize(FileInputStream fis){
+        try {
+            int available = fis.available();
+            byte[] bytes = new byte[available];
+            if(fis.read(bytes)<0){
+                throw new IOException();
+            }
+            return ByteSerializableBCSCache.deserialize(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to deserialize.\nCause : " + e.getMessage());
+        }
+    }
+
+    public static ByteSerializableBCSCache deserialize(String filepath){
+        try {
+            return ByteSerializableBCSCache.deserialize(new FileInputStream(filepath));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Failed to deserialize.\nCause : " + e.getMessage());
+        }
+    }
 
 }

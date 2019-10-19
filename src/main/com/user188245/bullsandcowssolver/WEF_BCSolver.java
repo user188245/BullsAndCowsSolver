@@ -50,19 +50,6 @@ public class WEF_BCSolver extends BCSolverV3{
         }
         Guess newSolution;
         newSolution = (Guess)solution.clone();
-//        if(highestWcCount>0 && wildCardList.size()>highestWcCount){
-//            int limit = (wildCardList.size()>=boxSize)?boxSize:wildCardList.size();
-//            for(int i=0; i<newSolution.size(); i++){
-//                if(limit <= highestWcCount){
-//                    break;
-//                }else{
-//                    if(!newSolution.get(i).equals(WILDCARD)){
-//                        newSolution.set(i, WILDCARD);
-//                        highestWcCount++;
-//                    }
-//                }
-//            }
-//        }
         for(int i=0,j=0; i<solution.size(); i++){
             if(newSolution.get(i).equals(WILDCARD)){
                 newSolution.set(i,wildCardList.get(j++));

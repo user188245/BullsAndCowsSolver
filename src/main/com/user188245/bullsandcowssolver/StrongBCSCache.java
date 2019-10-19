@@ -12,7 +12,7 @@ public interface StrongBCSCache extends BCSCache{
     public List<Guess> getAll(List<Trial> history);
 
     /**
-     * Select one guess among values with same key randomly
+     * Get recommended the guess among the eligible values .
      * @param history as key
      * @return Guess as Value
      */
@@ -22,9 +22,9 @@ public interface StrongBCSCache extends BCSCache{
     /**
      * Put all history-guess pairs into the cache.
      * @param history as Key
-     * @param guess as Value
+     * @param guesses as Value
      */
-    public void putAll(List<Trial> history, List<Guess> guess);
+    public void putAll(List<Trial> history, List<Guess> guesses);
 
     /**
      * Put history-guess pair into the cache.

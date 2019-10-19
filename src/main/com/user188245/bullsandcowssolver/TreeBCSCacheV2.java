@@ -1,68 +1,134 @@
 package com.user188245.bullsandcowssolver;
 
-import java.util.List;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * TreeBCSCache, The trie-based dynamic cache
+ *
+ *
  */
-public class TreeBCSCache implements ByteSerializableBCSCache, Serializable {
+public class TreeBCSCacheV2 implements ByteSerializableStrongBCSCache, Serializable {
 
     private int size;
     private int unitSize;
     private int boxSize;
     private Node root;
 
-    private TreeBCSCache(){ }
+    private TreeBCSCacheV2(){ }
 
-    public TreeBCSCache(Guess rootGuess, int unitSize){
+    public TreeBCSCacheV2(Guess rootGuess, int unitSize){
         this.size = 0;
-        this.root = new Node(rootGuess);
+        this.root = new Node(null,rootGuess,0L);
         this.unitSize = unitSize;
         this.boxSize = this.root.guess.size();
     }
 
-    class Node implements Serializable {
+    class Node implements Serializable, Comparable<Node> {
         Guess guess;
-        HashMap<Long, Node> child;
+        Node parent;
+        long code;
+        HashMap<Long, SortedSet<Node>> child;
+        float expected;
 
-        Node(Guess guess) {
+        Node(Node parent, Guess guess, long code) {
             this.guess = guess;
+            this.parent = parent;
+            this.code = code;
             this.child = new HashMap<>();
+            this.expected = Float.POSITIVE_INFINITY;
         }
 
         Node put(int bulls, int cows, Guess guess){
             long v = encode(bulls,cows);
-            Node oldNode = this.child.get(v);
-            if(oldNode == null){
-                oldNode = new Node(guess);
-                this.child.put(v,oldNode);
-            }else{
-                oldNode.guess = guess;
+            SortedSet<Node> oldNodeSet = this.child.computeIfAbsent(v, k -> new TreeSet<>());
+            Node newNode = new Node(this,guess,v);
+            oldNodeSet.add(newNode);
+            if(bulls == getBoxSize()){
+                newNode.backPropagation(0);
             }
-            return oldNode;
+            return newNode;
         }
 
-        public Node get(int bulls, int cows){
+        SortedSet<Node> getAll(int bulls, int cows){
             return this.child.get(encode(bulls,cows));
+        }
+
+        Node get(int bulls, int cows){
+            return getAll(bulls,cows).first();
+        }
+
+        void backPropagation(float expected){
+            this.expected = expected--;
+            if(this.parent != null){
+                if(this.parent.expected != Float.POSITIVE_INFINITY){
+                    int n;
+                    SortedSet<Node> nodeSet = this.parent.child.get(code);
+                    if(nodeSet == null){
+                        throw new RuntimeException("Internal Error.");
+                    }else{
+                        n = nodeSet.size();
+                    }
+                    expected = ((n-1)*this.parent.expected+expected)/n;
+                }
+                this.parent.backPropagation(expected);
+            }
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            if(o.expected == Float.POSITIVE_INFINITY){
+                return Float.compare(this.expected,root.expected);
+            }else if(this.expected == Float.POSITIVE_INFINITY){
+                return Float.compare(root.expected,o.expected);
+            }
+            return Float.compare(this.expected,o.expected);
+        }
+    }
+
+    @Override
+    public List<Guess> getAll(List<Trial> history) {
+        Node target = this.root;
+        SortedSet<Node> nodes = null;
+        for(Trial trial : history){
+            if(boxSize < trial.getBulls()+trial.getCows()){
+                throw new RuntimeException("Invalid history.");
+            }
+            nodes = target.getAll(trial.getBulls(), trial.getCows());
+            target = nodes.first();
+            if(target == null){
+                return null;
+            }
+        }
+        if(nodes != null){
+            List<Guess> result = new ArrayList<>(nodes.size());
+            for(Node node: nodes){
+                result.add(node.guess);
+            }
+            return result;
+        }else{
+            return null;
         }
     }
 
     @Override
     public Guess get(List<Trial> history) {
-        Node target = this.root;
-        for(Trial trial : history){
-            if(boxSize < trial.getBulls()+trial.getCows()){
-                throw new RuntimeException("Invalid history.");
-            }
-            target = target.get(trial.getBulls(), trial.getCows());
-            if(target == null){
-                return null;
-            }
+        List<Guess> guess = getAll(history);
+        if (guess != null) {
+            return guess.get(0);
+        } else {
+            return null;
         }
-        return target.guess;
+    }
+
+    @Override
+    public void putAll(List<Trial> history, List<Guess> guesses) {
+        for(Guess guess:guesses){
+            put(history,guess);
+        }
     }
 
     @Override

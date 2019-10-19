@@ -51,8 +51,7 @@ public class PerformanceChecker {
             bcSolver.reset();
             Collections.shuffle(unitList);
             answer = GuessImpl.generate(unitList.subList(0,box));
-            Collections.shuffle(unitList);
-            guess = GuessImpl.generate(unitList.subList(0,box));
+            guess = bcSolver.getSolution();
             while((guessResult = answer.computeResult(guess))[0] != box){
                 bcSolver.putClue(new Trial(guess,guessResult[0],guessResult[1]));
                 guess = bcSolver.getSolution();

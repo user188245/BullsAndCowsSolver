@@ -31,7 +31,7 @@ public class Trial implements Serializable {
 
     @Override
     public String toString() {
-        return guess + ", [" + bulls + "A" + cows + "B]";
+        return guess + ", [" + bulls + "B" + cows + "C]";
     }
 
     @Override
