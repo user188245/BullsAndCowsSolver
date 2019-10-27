@@ -7,23 +7,31 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * TreeBCSCache, The trie-based dynamic cache
+ * TreeBCSCacheV2, The trie-based dynamic cache
  *
+ * Node.expectedAverageHeight = ∑c.expectedAverageHeight/|this.child| + 1 for all c ∈ this.child
+ *
+ * Node Selection = high expectedAverageHeight (expected) first, wrong node will be selected by certain probability(trembling hand)
+ *
+ * Node BackPropagation = if the visited node is leaf-Node, to recalculate expectedAverageHeight, use backPropagation,
+ *      parent.expectedAverageHeight = ((|parent.child|-1)*parent.expectedAverageHeight+this.expectedAverageHeight)/|parent.child|;
  *
  */
-public class TreeBCSCacheV2 implements ByteSerializableStrongBCSCache, Serializable {
+public class TreeBCSCacheV2 implements ByteSerializableBCSCache, Serializable {
 
     private int size;
     private int unitSize;
     private int boxSize;
+    private float tremblingHandRate;
     private Node root;
 
     private TreeBCSCacheV2(){ }
 
-    public TreeBCSCacheV2(Guess rootGuess, int unitSize){
+    public TreeBCSCacheV2(Guess rootGuess, int unitSize, float tremblingHandRate){
         this.size = 0;
         this.root = new Node(null,rootGuess,0L);
         this.unitSize = unitSize;
+        this.tremblingHandRate = tremblingHandRate;
         this.boxSize = this.root.guess.size();
     }
 
@@ -58,7 +66,12 @@ public class TreeBCSCacheV2 implements ByteSerializableStrongBCSCache, Serializa
         }
 
         Node get(int bulls, int cows){
-            return getAll(bulls,cows).first();
+            SortedSet<Node> nodes = getAll(bulls,cows);
+            if(nodes != null){
+                return nodes.first();
+            }else{
+                return null;
+            }
         }
 
         void backPropagation(float expected){
@@ -87,10 +100,32 @@ public class TreeBCSCacheV2 implements ByteSerializableStrongBCSCache, Serializa
             }
             return Float.compare(this.expected,o.expected);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return code == node.code &&
+                    Float.compare(node.expected, expected) == 0 &&
+                    guess.equals(node.guess) &&
+                    parent.equals(node.parent) &&
+                    child.equals(node.child);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(guess, parent, code, child, expected);
+        }
     }
 
+    /**
+     * get guess using the key
+     * @param history as key
+     * @return Guess as Value or Null if not exist in cache. depending on trembling hand rate, obsolete guess (Second best guess or and so on) also can be returned.
+     */
     @Override
-    public List<Guess> getAll(List<Trial> history) {
+    public Guess get(List<Trial> history) {
         Node target = this.root;
         SortedSet<Node> nodes = null;
         for(Trial trial : history){
@@ -98,39 +133,26 @@ public class TreeBCSCacheV2 implements ByteSerializableStrongBCSCache, Serializa
                 throw new RuntimeException("Invalid history.");
             }
             nodes = target.getAll(trial.getBulls(), trial.getCows());
-            target = nodes.first();
-            if(target == null){
+            if(nodes == null || (target = nodes.first()) == null){
                 return null;
             }
         }
         if(nodes != null){
-            List<Guess> result = new ArrayList<>(nodes.size());
             for(Node node: nodes){
-                result.add(node.guess);
+                target = node;
+                if(Math.random() > tremblingHandRate){
+                    break;
+                }
             }
-            return result;
-        }else{
-            return null;
         }
+        return target.guess;
     }
 
-    @Override
-    public Guess get(List<Trial> history) {
-        List<Guess> guess = getAll(history);
-        if (guess != null) {
-            return guess.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void putAll(List<Trial> history, List<Guess> guesses) {
-        for(Guess guess:guesses){
-            put(history,guess);
-        }
-    }
-
+    /**
+     * Put history-guess pair into the cache, Even if the value with current key already exists, it always keeps previous value.
+     * @param history as Key
+     * @param guess as Value
+     */
     @Override
     public void put(List<Trial> history, Guess guess) {
         if(history.size() == 0){
@@ -204,4 +226,20 @@ public class TreeBCSCacheV2 implements ByteSerializableStrongBCSCache, Serializa
         return (boxSize+1)*bulls+cows;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TreeBCSCacheV2 that = (TreeBCSCacheV2) o;
+        return size == that.size &&
+                unitSize == that.unitSize &&
+                boxSize == that.boxSize &&
+                Float.compare(that.tremblingHandRate, tremblingHandRate) == 0 &&
+                root.equals(that.root);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(size, unitSize, boxSize, tremblingHandRate, root);
+    }
 }

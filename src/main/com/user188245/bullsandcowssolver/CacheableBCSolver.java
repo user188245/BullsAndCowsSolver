@@ -9,6 +9,9 @@ import java.util.Queue;
 
 /**
  * Cacheable BCSolver
+ *
+ * Technically, "BCSolver with Tabulation" is exact wording rather than "Cacheable BCSolver" in case.
+ *
  */
 public class CacheableBCSolver implements BullsAndCowsSolver{
 

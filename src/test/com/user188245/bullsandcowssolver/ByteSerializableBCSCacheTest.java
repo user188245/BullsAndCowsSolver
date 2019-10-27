@@ -22,6 +22,7 @@ abstract class ByteSerializableBCSCacheTest extends BCSCacheTest{
         assertNotEquals(0, serializedData.length);
         ByteSerializableBCSCache byteSerializableBCSCache2 = ByteSerializableBCSCache.deserialize(serializedData);
         assertNotNull(byteSerializableBCSCache2);
+        assertEquals(byteSerializableBCSCache, byteSerializableBCSCache2);
         assertEquals(byteSerializableBCSCache.getBoxSize(), byteSerializableBCSCache2.getBoxSize());
         assertEquals(byteSerializableBCSCache.getUnitSize(), byteSerializableBCSCache2.getUnitSize());
     }

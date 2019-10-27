@@ -48,7 +48,7 @@ abstract class BCSCacheTest {
         assertEquals(GuessImpl.generate(5,8,1,6,0),guess);
         bcsCache.put(history, GuessImpl.generate(2,7,3,8,4));
         guess = bcsCache.get(history);
-        assertEquals(GuessImpl.generate(5,8,1,6,0),guess);
+        assertEquals(GuessImpl.generate(2,7,3,8,4),guess);
     }
 
     @Test

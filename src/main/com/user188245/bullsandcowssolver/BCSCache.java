@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * BCSCache
+ *
  */
 interface BCSCache{
 
@@ -15,7 +16,7 @@ interface BCSCache{
     public Guess get(List<Trial> history);
 
     /**
-     * Put history-guess pair into the cache, If the value with current key already exists, it will be ignored.
+     * Put history-guess pair into the cache.
      * @param history as Key
      * @param guess as Value
      */

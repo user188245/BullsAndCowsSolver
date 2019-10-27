@@ -1,6 +1,5 @@
 package com.user188245.bullsandcowssolver;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

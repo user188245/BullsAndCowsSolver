@@ -48,6 +48,20 @@ public class TreeBCSCache implements ByteSerializableBCSCache, Serializable {
         public Node get(int bulls, int cows){
             return this.child.get(encode(bulls,cows));
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return guess.equals(node.guess) &&
+                    child.equals(node.child);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(guess, child);
+        }
     }
 
     @Override
@@ -65,6 +79,11 @@ public class TreeBCSCache implements ByteSerializableBCSCache, Serializable {
         return target.guess;
     }
 
+    /**
+     * Put history-guess pair into the cache, If the value with current key already exists, it will be overwritten.
+     * @param history as Key
+     * @param guess as Value
+     */
     @Override
     public void put(List<Trial> history, Guess guess) {
         if(history.size() == 0){
@@ -81,20 +100,28 @@ public class TreeBCSCache implements ByteSerializableBCSCache, Serializable {
                 throw new RuntimeException("Invalid Bulls and Cows values.");
             }
             Node tmpTarget = target.get(bulls,cows);
-            if(tmpTarget == null){
-                Guess newGuess;
-                if(i == history.size()-1){
-                    newGuess = guess;
+
+            Guess newGuess;
+            if(i == history.size()-1){
+                newGuess = guess;
+            }else{
+                newGuess = history.get(i+1).getGuess();
+            }
+            if(newGuess.size() != this.boxSize){
+                throw new RuntimeException("Incorrect boxSize of current guess into trial.");
+            }
+            if(tmpTarget != null){
+                if(tmpTarget.guess.equals(newGuess)){
+                    target = tmpTarget;
                 }else{
-                    newGuess = history.get(i+1).getGuess();
+                    tmpTarget = null;
+                    System.gc();
+                    target = target.put(bulls,cows,newGuess);
                 }
-                if(newGuess.size() != this.boxSize){
-                    throw new RuntimeException("Incorrect boxSize of current guess into trial.");
-                }
-                tmpTarget = target.put(bulls,cows,newGuess);
+            }else{
+                target = target.put(bulls,cows,newGuess);
                 this.size++;
             }
-            target = tmpTarget;
         }
     }
 
@@ -138,4 +165,19 @@ public class TreeBCSCache implements ByteSerializableBCSCache, Serializable {
         return (boxSize+1)*bulls+cows;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TreeBCSCache that = (TreeBCSCache) o;
+        return size == that.size &&
+                unitSize == that.unitSize &&
+                boxSize == that.boxSize &&
+                root.equals(that.root);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(size, unitSize, boxSize, root);
+    }
 }
