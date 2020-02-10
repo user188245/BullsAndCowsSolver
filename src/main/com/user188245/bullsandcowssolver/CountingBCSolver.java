@@ -72,6 +72,12 @@ public class CountingBCSolver implements BullsAndCowsSolver{
     public CountingBCSolver(int unitSize, int boxSize) {
         this.unitSize = unitSize;
         this.boxSize = boxSize;
+        if(this.unitSize < this.boxSize){
+            throw new IllegalArgumentException("unitSize must be greater than boxSize.");
+        }
+        if(this.boxSize < 2){
+            throw new IllegalArgumentException("boxSize must be 2 as least.");
+        }
         this.wildCardList = new ArrayList<>();
         for (int i = 0; i < unitSize; i++) {
             this.wildCardList.add(i);
@@ -126,7 +132,6 @@ public class CountingBCSolver implements BullsAndCowsSolver{
                 answerableSet = null;
                 answerableSet = newAnswerableSet;
             }
-
         }else{
             for(Integer item : sortedInput){
                 answerableSet.removeIf(x->x.contains(item));
@@ -134,7 +139,6 @@ public class CountingBCSolver implements BullsAndCowsSolver{
         }
         history.add(trial);
     }
-
 
     private List<Guess> countingGuess(Guess guess, int bulls, int cows, List<Guess> countableGuessList){
         List<Guess> result = new ArrayList<>();
@@ -145,8 +149,6 @@ public class CountingBCSolver implements BullsAndCowsSolver{
             }
         }
         return result;
-
-
     }
 
     @Override
@@ -202,5 +204,4 @@ public class CountingBCSolver implements BullsAndCowsSolver{
         }
         return result;
     }
-
 }

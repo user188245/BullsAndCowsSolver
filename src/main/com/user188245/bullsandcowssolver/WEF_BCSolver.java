@@ -12,9 +12,6 @@ public class WEF_BCSolver extends BCSolverV3{
 
     public WEF_BCSolver(int unitSize, int boxSize) {
         super(unitSize, boxSize);
-        if(boxSize < 2){
-            throw new RuntimeException("boxSize must be 2 as least.");
-        }
     }
 
     @Override

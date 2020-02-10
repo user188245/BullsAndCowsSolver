@@ -35,6 +35,12 @@ public class BCSolverV3 implements BullsAndCowsSolver {
     public BCSolverV3(int unitSize, int boxSize) {
         this.unitSize = unitSize;
         this.boxSize = boxSize;
+        if(this.unitSize < this.boxSize){
+            throw new IllegalArgumentException("unitSize must be greater than boxSize.");
+        }
+        if(this.boxSize < 2){
+            throw new IllegalArgumentException("boxSize must be 2 as least.");
+        }
         this.wildCardList = new ArrayList<>();
         for (int i = 0; i < unitSize; i++) {
             this.wildCardList.add(i);
